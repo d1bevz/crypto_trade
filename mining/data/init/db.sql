@@ -1,8 +1,8 @@
 create schema crypto_trade;
 
-create user crypto_punk with encrypted password 'decentralized';
+create user punk with encrypted password 'decentralized';
 
-grant all privileges on schema crypto_trade to crypto_punk;
+grant all privileges on schema crypto_trade to punk;
 
 create table crypto_trade.candlesticks_raw (
                                                ticker text,
