@@ -77,5 +77,8 @@ class OKXParser:
     def preprocess(self, df, cols):
         result = df.replace('', np.nan)
         for col in df.columns:
-            result[col] = result[col].astype(cols[col])
+            if type(cols[col]) == pd.datetime:
+                result[col] = pd.to_datetime(result[col], unit='ms')
+            else:
+                result[col] = result[col].astype(cols[col])
         return result
