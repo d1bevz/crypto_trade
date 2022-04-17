@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import numpy as np
+from datetime import datetime
 from typing import List
 
 INSTRUMENT_TYPES = ['SPOT', 'MARGIN', 'SWAP']
@@ -17,8 +18,8 @@ INSTRUMENTS_COLUMNS = dict(
     ctValCcy=str,
     optType=str,
     stk=float,
-    listTime=pd.datetime,
-    expTime=pd.datetime,
+    listTime=datetime,
+    expTime=datetime,
     lever=float,
     tickSz=float,
     lotSz=float,
@@ -65,19 +66,12 @@ class OKXParser:
         result = pd.DataFrame(result.json()['data'])
         if set(result.columns) != set(INSTRUMENTS_COLUMNS.keys()):
             raise ValueError('Please fill underlying asset as uly parameter')
-        # Pre-processing data
-        result = result.replace('', np.nan)
-        result['category'] = result['category'].astype(int)
-        float_cols = ['ctVal', 'ctMult', 'stk', 'lever', 'tickSz', 'lotSz', 'minSz']
-        result[float_cols] = result[float_cols].astype(float)
-        result['listTime'] = pd.to_datetime(result['listTime'], unit='ms')
-        result['expTime'] = pd.to_datetime(result['expTime'], unit='ms')
         return result[INSTRUMENTS_COLUMNS.keys()]
 
     def preprocess(self, df, cols):
         result = df.replace('', np.nan)
         for col in df.columns:
-            if type(cols[col]) == pd.datetime:
+            if cols[col] == datetime:
                 result[col] = pd.to_datetime(result[col], unit='ms')
             else:
                 result[col] = result[col].astype(cols[col])
