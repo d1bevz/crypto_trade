@@ -7,3 +7,4 @@ plotly==5.7.0
 dash==2.3.1
 apache-airflow==2.2.5
 pendulum==2.1.2
+psycopg2-binary==2.9.3
