@@ -1,92 +1,44 @@
-create schema crypto_trade;
+create schema public_data;
+create schema market_data;
 
-create user punk with encrypted password 'decentralized';
+create user airflow with encrypted password 'airflow';
 
-grant all privileges on schema crypto_trade to punk;
+grant all privileges on database crypto_trade to airflow;
 
-create table crypto_trade.candlesticks_raw (
-                                               ticker text,
-                                               ts bigint,
-                                               open float8,
-                                               high float8,
-                                               low float8,
-                                               close float8,
-                                               vol float8,
-                                               volCcy float8,
-                                               updated timestamp default now()
-);
 
-create table crypto_trade.instruments_spot (
-                                               instType text,
-                                               instId text,
+create table public_data.instruments_spot (
+                                               inst_type text,
+                                               inst_id text,
                                                uly text,
                                                category int8,
-                                               baseCcy text,
-                                               quoteCcy text,
-                                               settleCcy text,
-                                               ctVal float8,
-                                               ctMult float8,
-                                               ctValCcy text,
-                                               optType text,
+                                               base_ccy text,
+                                               quote_ccy text,
+                                               settle_ccy text,
+                                               ct_val float8,
+                                               ct_mult float8,
+                                               ct_val_ccy text,
+                                               opt_type text,
                                                stk float8,
-                                               listTime timestamp,
-                                               expTime timestamp,
+                                               list_time timestamp,
+                                               exp_time timestamp,
                                                lever float8,
-                                               tickSz float8,
-                                               lotSz float8,
-                                               minSz float8,
-                                               ctType text,
+                                               tick_sz float8,
+                                               lot_sz float8,
+                                               min_sz float8,
+                                               ct_type text,
                                                alias text,
                                                state text,
                                                updated timestamp default now()
 );
 
-create table crypto_trade.instruments_swap (
-                                                 instType text,
-                                                 instId text,
-                                                 uly text,
-                                                 category int8,
-                                                 baseCcy text,
-                                                 quoteCcy text,
-                                                 settleCcy text,
-                                                 ctVal float8,
-                                                 ctMult float8,
-                                                 ctValCcy text,
-                                                 optType text,
-                                                 stk float8,
-                                                 listTime timestamp,
-                                                 expTime timestamp,
-                                                 lever float8,
-                                                 tickSz float8,
-                                                 lotSz float8,
-                                                 minSz float8,
-                                                 ctType text,
-                                                 alias text,
-                                                 state text,
-                                                 updated timestamp default now()
-);
-
-create table crypto_trade.instruments_margin (
-                                                 instType text,
-                                                 instId text,
-                                                 uly text,
-                                                 category int8,
-                                                 baseCcy text,
-                                                 quoteCcy text,
-                                                 settleCcy text,
-                                                 ctVal float8,
-                                                 ctMult float8,
-                                                 ctValCcy text,
-                                                 optType text,
-                                                 stk float8,
-                                                 listTime timestamp,
-                                                 expTime timestamp,
-                                                 lever float8,
-                                                 tickSz float8,
-                                                 lotSz float8,
-                                                 minSz float8,
-                                                 ctType text,
-                                                 alias text,
-                                                 state text,
-                                                 updated timestamp default now()
+create table crypto_trade.market_data.candlesticks_raw (
+                                                           ticker text,
+                                                           ts bigint,
+                                                           open float8,
+                                                           high float8,
+                                                           low float8,
+                                                           close float8,
+                                                           vol float8,
+                                                           vol_ccy float8,
+                                                           updated timestamp default now()
 );
