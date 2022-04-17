@@ -99,6 +99,8 @@ class OKXParser:
         for col in df.columns:
             if cols[col] == datetime:
                 result[col] = pd.to_datetime(result[col], unit='ms')
+            elif cols[col] == str:
+                pass
             else:
                 result[col] = result[col].astype(cols[col])
         return result
