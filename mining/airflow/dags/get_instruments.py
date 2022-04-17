@@ -1,12 +1,15 @@
 from airflow import DAG
 from airflow.decorators import task
 from airflow.models import variable, connection
+from airflow.hooks.base import BaseHook
+from airflow.utils import db
+from sqlalchemy import create_engine
 import logging
 import pendulum
 from utils.okx_parser import OKXParser, INSTRUMENTS_COLUMNS
 
-postgres = connection.Connection(conn_id='MY_PROD_DATABASE')
-
+postgres = BaseHook.get_connection('MY_PROD_DATABASE')
+postgres = create_engine(postgres.get_uri())
 log = logging.getLogger(__name__)
 
 parser = OKXParser()
@@ -16,13 +19,13 @@ with DAG(
         schedule_interval='0 0 * * *',
         start_date=pendulum.datetime(2022, 4, 17, tz="UTC"),
         catchup=False,
-        tags=['mining'],
+        tags=['mining', 'public_data']
 ) as dag:
     @task(task_id="get_SPOT")
     def get_spot():
         instruments = parser.get_instruments('SPOT')
         instruments = parser.preprocess(instruments, INSTRUMENTS_COLUMNS)
-        instruments.to_sql(name='instruments_spot', con=postgres, schema='crypto_trade', if_exists='append')
+        instruments[INSTRUMENTS_COLUMNS.keys()].to_sql(name='instruments_spot', con=postgres, schema='public_data', if_exists='append', index=False)
         return 'Success'
 
     get_spot()
