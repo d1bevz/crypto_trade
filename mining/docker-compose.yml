@@ -35,9 +35,9 @@ services:
             - "-c"
             - "pg_stat_statements.track=all"
         environment:
-            - POSTGRES_USER=airflow
-            - POSTGRES_PASSWORD=airflow
-            - POSTGRES_DB=airflow
+            - POSTGRES_USER=punk
+            - POSTGRES_PASSWORD=crypto
+            - POSTGRES_DB=crypto_trade
             - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
             - ./data/init:/docker-entrypoint-initdb.d
@@ -45,7 +45,7 @@ services:
         ports:
             - "5432:5432"
         healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -U airflow -d crypto_trade" ]
+            test: [ "CMD-SHELL", "pg_isready -U punk -d crypto_trade" ]
             interval: 10s
             timeout: 5s
             retries: 5
