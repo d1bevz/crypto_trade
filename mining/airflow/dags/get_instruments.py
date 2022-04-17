@@ -8,11 +8,11 @@ import logging
 import pendulum
 from utils.okx_parser import OKXParser, INSTRUMENTS_COLUMNS
 
-postgres = BaseHook.get_connection('MY_PROD_DATABASE')
-postgres = create_engine(postgres.get_uri())
 log = logging.getLogger(__name__)
 
 parser = OKXParser()
+postgres = BaseHook.get_connection('MY_PROD_DATABASE')
+postgres = create_engine(postgres.get_uri())
 
 with DAG(
         dag_id='get_instruments',
@@ -28,8 +28,23 @@ with DAG(
         instruments[INSTRUMENTS_COLUMNS.keys()].to_sql(name='instruments_spot', con=postgres, schema='public_data', if_exists='append', index=False)
         return 'Success'
 
-    get_spot()
+    @task(task_id="get_SWAP")
+    def get_swap():
+        instruments = parser.get_instruments('SWAP')
+        instruments = parser.preprocess(instruments, INSTRUMENTS_COLUMNS)
+        instruments[INSTRUMENTS_COLUMNS.keys()].to_sql(name='instruments_swap', con=postgres, schema='public_data', if_exists='append', index=False)
+        return 'Success'
 
+    @task(task_id="get_MARGIN")
+    def get_margin():
+        instruments = parser.get_instruments('MARGIN')
+        instruments = parser.preprocess(instruments, INSTRUMENTS_COLUMNS)
+        instruments[INSTRUMENTS_COLUMNS.keys()].to_sql(name='instruments_margin', con=postgres, schema='public_data', if_exists='append', index=False)
+        return 'Success'
+
+    get_spot()
+    get_swap()
+    get_margin()
 
 
 # {
