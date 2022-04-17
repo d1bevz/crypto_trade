@@ -54,6 +54,18 @@ INSTRUMENTS_COLUMNS_MAPPER = dict(
     state='state'
 )
 
+CANDLESTICKS_HISTORY_COLUMNS_DT = OrderedDict(
+    ts=datetime,
+    open=float,
+    high=float,
+    low=float,
+    close=float,
+    vol=float,
+    vol_ccy=float
+)
+
+CANDLESTICKS_HISTORY_COLUMNS = ['ts', 'open', 'high', 'low', 'close', 'vol', 'vol_ccy']
+
 class OKXParser:
 
     headers = {
@@ -67,6 +79,17 @@ class OKXParser:
         :param url: REST API URL
         """
         self.url = url
+
+    def preprocess(self, df, cols):
+        result = df.replace('', np.nan)
+        for col in df.columns:
+            if cols[col] == datetime:
+                result[col] = pd.to_datetime(result[col], unit='ms')
+            elif cols[col] == str:
+                pass
+            else:
+                result[col] = result[col].astype(cols[col])
+        return result
 
     def get_instruments(self, instType, uly=None, instId=None) -> pd.DataFrame:
         """
@@ -94,13 +117,25 @@ class OKXParser:
         result = result.rename(mapper=INSTRUMENTS_COLUMNS_MAPPER, axis='columns')
         return result[INSTRUMENTS_COLUMNS.keys()]
 
-    def preprocess(self, df, cols):
-        result = df.replace('', np.nan)
-        for col in df.columns:
-            if cols[col] == datetime:
-                result[col] = pd.to_datetime(result[col], unit='ms')
-            elif cols[col] == str:
-                pass
-            else:
-                result[col] = result[col].astype(cols[col])
+    def get_candlesticks_history(self, instId, after=None, before=None, bar=None, limit=None) -> pd.DataFrame:
+        """
+
+        :param instId:
+        :param after:
+        :param before:
+        :param bar:
+        :param limit:
+        :return:
+        """
+        command = '/api/v5/market/history-candles'
+        params = dict(
+            instId=instId,
+            after=after,
+            before=before,
+            bar=bar,
+            limit=limit
+        )
+        result = requests.get(self.url + command, params=params, headers=self.headers)
+        result = pd.DataFrame(result.json()['data'], columns=CANDLESTICKS_HISTORY_COLUMNS)
         return result
+
