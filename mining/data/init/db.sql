@@ -91,9 +91,9 @@ union all
 select *
 from public_data.instruments_margin;
 
-create table crypto_trade.market_data.candlesticks_raw (
+create table crypto_trade.market_data.candlesticks_history (
                                                            ticker text,
-                                                           ts bigint,
+                                                           ts timestamp,
                                                            open float8,
                                                            high float8,
                                                            low float8,
