@@ -55,6 +55,7 @@ INSTRUMENTS_COLUMNS_MAPPER = dict(
 )
 
 CANDLESTICKS_HISTORY_COLUMNS_DT = OrderedDict(
+    ticker=str,
     ts=datetime,
     open=float,
     high=float,
@@ -81,10 +82,10 @@ class OKXParser:
         self.url = url
 
     def preprocess(self, df, cols):
-        result = df.replace('', np.nan)
+        result = df.copy()
         for col in df.columns:
             if cols[col] == datetime:
-                result[col] = pd.to_datetime(result[col], unit='ms')
+                result[col] = pd.to_datetime(result[col], unit='ms', utc=True)
             elif cols[col] == str:
                 pass
             else:
@@ -115,6 +116,7 @@ class OKXParser:
         if set(result.columns) != set(INSTRUMENTS_COLUMNS_MAPPER.keys()):
             raise ValueError('Please fill underlying asset as uly parameter')
         result = result.rename(mapper=INSTRUMENTS_COLUMNS_MAPPER, axis='columns')
+        result = result.replace('', np.nan, )
         return result[INSTRUMENTS_COLUMNS.keys()]
 
     def get_candlesticks_history(self, instId, after=None, before=None, bar=None, limit=None) -> pd.DataFrame:
@@ -137,5 +139,6 @@ class OKXParser:
         )
         result = requests.get(self.url + command, params=params, headers=self.headers)
         result = pd.DataFrame(result.json()['data'], columns=CANDLESTICKS_HISTORY_COLUMNS)
+        result.insert(0, column='ticker', value='BTC-USDT')
         return result
 
