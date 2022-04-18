@@ -1,4 +1,4 @@
-# Docker Mining
+# Mining
 
 ## Overview
 ![Docker Airflow 2.0 architecture](https://miro.medium.com/max/1100/1*pAUdLzHgRMKFw2gVuasyCA.png)
@@ -8,24 +8,25 @@
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Running
-For simple usage and running with no additional dependencies use running with 
-the official image. If additional configuration is needed use custom image 
-running instructions below.
-
-### Official image
+For simple usage I prepared docker-compose image of Mining service, all you need is to run following commands:
 ```
-make run
+cd mining
+docker-compose run -d
 ```
 
 ## Usage
 
-* Airflow UI: [localhost:8080](http://localhost:8080/)
+* Airflow 2.2.5: [localhost:8080](http://localhost:8080/)
     * Username: admin
     * Password: admin
 * PGAdmin : [localhost:5050](http://localhost:5050/)
   * Default password: admin
+* Postgres DB 13
+  * Username: punk
+  * Password: crypto
         
-Note: username and password can be configured in `/scripts/entrypoint.sh`
+Note: Airflow username and password can be configured in `/scripts/entrypoint.sh`, 
+postgres credentials you can change at `docker-compose.yml`
 
 
 ## Configuring Airflow
@@ -46,3 +47,10 @@ with `AIRFLOW_CONN_` - for example `AIRFLOW_CONN_POSTGRES_MASTER=postgres://user
 for a connection called "postgres_master". The value is parsed as a URI. This 
 will work for hooks etc, but won't show up in the "Ad-hoc Query" section unless 
 an (empty) connection is also created in the DB
+
+# Credits
+
+
+Big thanks to @AVAInformationSystems [for their Medium article](https://medium.com/ava-information/airflow-2-0-docker-development-setup-docker-compose-postgresql-7911f553b42b), it helped me to build right docker for Airflow service and postgres db
+
+Thanks to @mfvanek [for his code](https://github.com/mfvanek/useful-sql-scripts/tree/master/running_pg_in_docker) and [the habr article](https://habr.com/ru/post/578744/), it helped to setup postgres database
