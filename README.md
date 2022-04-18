@@ -7,10 +7,10 @@ A service to project intraday spot price for crypto currency pairs (like BTC/USD
 METIY concept for Crypto Trade architecture:
 
 - *Mine*: this is a Docker-application that runs an Airflow to repeatedly collect a market data from OKX API server and write it to a postrges database
-- *Expose*: a short Dash-application for vizualization of a market data and estimations
-- *Train*: a set of Catboost, Pytorch trained models ready for inference
+- *Expose*: a short Dash-application for visualization of a market data and estimations
+- *Train*: this is an MLFlow image with a set of Catboost, Pytorch training pipelines
 - *Inference*: a python-module for making predictions based on underlying ML-model
-- *Yield*: an alert system or recommdendation system for making trades [need more research]
+- *Yield*: an alert system or recommendation system for making trades [need more research]
 
 
 # Mining module
