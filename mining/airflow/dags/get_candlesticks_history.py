@@ -32,7 +32,7 @@ with DAG(
 ) as dag:
 
     for instrument in instruments:
-        @task(task_id=f"get_{instrument}", retries=3, execution_timeout=timedelta(seconds=20))
+        @task(task_id=f"get_{instrument}", retries=3, execution_timeout=timedelta(seconds=10))
         def get_candlesticks_history(instrument_id, ts=None):
             ts = int(time.mktime(pendulum.parse(ts).timetuple()) * 1000)
             candlesticks_history = parser.get_candlesticks_history(instrument_id, after=ts, limit=60)
