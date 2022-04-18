@@ -139,6 +139,6 @@ class OKXParser:
         )
         result = requests.get(self.url + command, params=params, headers=self.headers)
         result = pd.DataFrame(result.json()['data'], columns=CANDLESTICKS_HISTORY_COLUMNS)
-        result.insert(0, column='ticker', value='BTC-USDT')
+        result.insert(0, column='ticker', value=instId)
         return result
 
